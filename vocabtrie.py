@@ -61,7 +61,7 @@ class VocabTrie(object):
     def get_words_with_prefix(self, prefix, model, stateIn, stateOut):
         words = []
         probabilities = []
-        wordsWithProbs = []
+        words_with_probs = []
 
         if prefix == None:
             prefix = ''
@@ -73,7 +73,7 @@ class VocabTrie(object):
                 top_node = top_node.children[character]
             else:
                 # return words, probabilities
-                return wordsWithProbs
+                return words_with_probs
 
         # Get words under prefix
         if top_node == self.root:
@@ -88,15 +88,15 @@ class VocabTrie(object):
                 words.append(current_node.data)
                 logProb = model.BaseScore(stateIn, current_node.data, stateOut)
                 probabilities.append(logProb)
-                # wordsWithProbs.append(current_node.data)
-                # wordsWithProbs.append(logProb)
-                # wordsWithProbs[current_node.data] = logProb
+                # words_with_probs.append(current_node.data)
+                # words_with_probs.append(logProb)
+                # words_with_probs[current_node.data] = logProb
                 tup = (current_node.data, logProb)
-                wordsWithProbs.append(tup)
+                words_with_probs.append(tup)
 
             queue = [node for key, node in current_node.children.iteritems()] + queue
 
-        return wordsWithProbs
+        return words_with_probs
 
 
 

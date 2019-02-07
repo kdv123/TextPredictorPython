@@ -3,7 +3,7 @@
 import kenlm  # pip install https://github.com/kdv123/archive/master.zip
 import vocabtrie
 
-inf = 2147483647
+INF = 2147483647
 
 class WordPredictor:
     wordList = []
@@ -12,6 +12,9 @@ class WordPredictor:
         self.lmFileName = lm_filename
         self.vocab_filename = vocab_filename
         self.language_model = kenlm.LanguageModel(lm_filename)
+        #char_list can also be constructed by calling the create_char_list_from_vocab function
+        #To create a character list when creating a trie call the above mentioned function
+        #from add_vocab function
         self.next_char_li = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                              's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', "'", '.', ',', '?', '#', '$', '@']
         self.trieTable = {}
@@ -30,23 +33,28 @@ class WordPredictor:
                 newVocabTrie.add_word(line)
         return newVocabTrie
 
+    #Function to update character list
     @staticmethod
     def update_char_list_from_string(char_list, string):
         for char in string:
-            char_list.add(char)
+            char_list.append(char)
         return char_list
 
+    #Given a vocab_id and vocab_filename, the following function adds every
+    #unique character of the vocabulary in a character list
     @staticmethod
-    def create_char_list_from_vocab(vocabFileName):
+    def create_char_list_from_vocab(vocab_id, vocab_filename):
         char_list = set()
-        with open(vocabFileName) as fp:
+        char_list_by_vocab_id = {}
+        with open(vocab_filename) as fp:
             #i = 0
             for line in fp:
                 line = line.strip()
                 for char in line:
                     char_list.add(char)
 
-        return char_list
+        char_list_by_vocab_id[vocab_id] = char_list
+        return char_list_by_vocab_id
 
     @staticmethod
     def get_punc_token(punctuation):
@@ -61,7 +69,7 @@ class WordPredictor:
 
     # This method adds a vocabulary to the instance of the class. The vocabulary
     # is saved as a Trie data structure. For multiple vocabularies, the Tries are
-    # maped in a hash table with a vocab_id
+    # mapped in a hash table with a vocab_id
     # The trie can be accessed by the vocab_id provided
     def add_vocab(self, vocab_id, vocab_filename):
         if self.trieTable.has_key(vocab_id):
@@ -102,7 +110,7 @@ class WordPredictor:
         context = ''
         vocab_id = ''
         num_predictions = 3
-        min_log_prob = -inf
+        min_log_prob = -INF
 
         # arguments in the form 'prefix, vocab_id, num_of_predictions, min_log_prob'
         if num_of_args == 4:
@@ -184,7 +192,7 @@ class WordPredictor:
                 log_prob = p
         return word, log_prob
 
-    def get_most_probable_word(self, prefix, context, vocab_id, num_predictions = 1, min_log_prob = -inf):
+    def get_most_probable_word(self, prefix, context, vocab_id, min_log_prob = -INF):
         (stateIn, stateOut) = self.get_context_state(context, self.language_model)
         most_prob_word = ''
         most_prob_word_log = min_log_prob
@@ -215,7 +223,7 @@ def main():
     #words = predictor.get_words('f', '', 3, -inf)
     #predictor.print_suggestions(words)
 
-    words = predictor.get_words('a', 'the united states of', '', 3, -inf)
+    words = predictor.get_words('a', 'the united states of', '', 3, -INF)
     predictor.print_suggestions(words)
     #print(predictor.get_most_likely_word(words))
     #predictor.add_vocab('vocab_100k', vocab_filename)
