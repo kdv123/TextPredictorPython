@@ -1,6 +1,6 @@
 import unittest
 from vocabtrie import VocabTrie
-from vocabtrie import TrieNode
+from vocabtrie import VocabTrieNode
 import kenlm
 
 class TestVocabTrie(unittest.TestCase):
@@ -11,11 +11,6 @@ class TestVocabTrie(unittest.TestCase):
     def test_add_word(self):
         self.vocabtrie.add_word('abc')
         #self.fail()
-
-    def test_has_word(self):
-        self.vocabtrie.add_word('abc')
-        self.assertTrue(self.vocabtrie.has_word('abc'), 'Word does not exist in trie')
-        self.assertFalse(self.vocabtrie.has_word('d'), 'Word exist in trie')
 
 
     def test_get_words_with_prefix(self):
@@ -29,3 +24,4 @@ class TestVocabTrie(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
