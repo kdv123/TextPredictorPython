@@ -1,5 +1,5 @@
 from unittest import TestCase
-from vocabtrie import TrieNode
+from vocabtrie import VocabTrie
 
 class TestTrieNode(TestCase):
     pass
