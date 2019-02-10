@@ -4,7 +4,6 @@ from predictor import WordPredictor
 from vocabtrie import VocabTrie
 import numbers
 
-INF = 2147483647
 
 class TestWordPredictor(unittest.TestCase):
 
@@ -57,7 +56,7 @@ class TestWordPredictor(unittest.TestCase):
 
     def test__get_words(self):
 
-        suggestion_list = self.wordPredictor._get_words('a', 'the united states of', self.vocab_id, 3,-INF)
+        suggestion_list = self.wordPredictor._get_words('a', 'the united states of', self.vocab_id, 3,-float('inf'))
         self.assertTrue(isinstance(type(suggestion_list), type(str)), "Not a list") #basestring is gone in python 3
 
 
