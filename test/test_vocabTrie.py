@@ -1,6 +1,5 @@
 import unittest
 from vocabtrie import VocabTrie
-from vocabtrie import VocabTrieNode
 import kenlm
 
 class TestVocabTrie(unittest.TestCase):
