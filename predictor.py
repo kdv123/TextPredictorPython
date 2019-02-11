@@ -154,6 +154,9 @@ class WordPredictor:
     # Input: a list of probable words and their proability for a list of prefix
     # Example: [[0, [['a', -2.04],['aa', -3.04],['ab', -2.04]]], [[1, [['b', -2.04],['ba', -3.04],['bb', -2.04]]] .....]
     def print_suggestions(self, suggestion_list):
+        if suggestion_list == None:
+            print("Word list is empty.")
+            return
         print('--------------------------------------------')
         print('Word\tProbability')
         print('--------------------------------------------')
@@ -184,9 +187,9 @@ class WordPredictor:
         most_prob_word, most_prob_word_log = self.find_most_probable_word(words_with_log_prob, most_prob_word, most_prob_word_log)
 
         # Print the most probable word if needed
-        print('Context: ' + context)
-        print('Prefix: ' + prefix)
-        print('Most likely word: "' + most_prob_word + '" with log probability: ' + str(most_prob_word_log))
+        #print('Context: ' + context)
+        #print('Prefix: ' + prefix)
+        #print('Most likely word: "' + most_prob_word + '" with log probability: ' + str(most_prob_word_log))
 
         return most_prob_word, most_prob_word_log
 
@@ -201,12 +204,15 @@ def main():
     #words = predictor.get_words('f', '', 3, -float('inf')
     #predictor.print_suggestions(words)
 
-    words = predictor.get_words_with_context('a', 'the united states of', '', 2, -float('inf'))
-    predictor.print_suggestions(words)
+    #words = predictor.get_words_with_context('', 'hello', '', 3, -float('inf'))
+    #predictor.print_suggestions(words)
     #print(predictor.get_most_likely_word(words))
     #predictor.add_vocab('vocab_100k', vocab_filename)
 
-    #predictor.get_most_probable_word('a', 'the united states of', '')
+    #predictor.get_most_probable_word('w', 'hello', '')
+
+    words = predictor.get_words('h', '', 3, -float('inf'))
+    predictor.print_suggestions(words)
 
 
 
