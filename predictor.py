@@ -4,18 +4,15 @@ import os
 import kenlm  # pip install https://github.com/kdv123/kenlm/archive/master.zip
 import vocabtrie
 class WordPredictor:
-    wordList = []
-
     def __init__(self, lm_filename, vocab_filename):
         self.lm_filename = lm_filename
         self.vocab_filename = vocab_filename
         self.language_model = kenlm.LanguageModel(lm_filename)
-
-        self.char_list = self.create_char_list_from_vocab('', vocab_filename)
-        #self.next_char_li = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-                             #'s', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_', "'", '.', ',', '?', '#', '$', '@']
+        self.char_list = {}
+        self.char_list[''] = self.create_char_list_from_vocab('', vocab_filename)
         self.trie_table = {}
         self.trie_table[''] = self.create_new_trie(vocab_filename)
+        self.token_list = self.get_punctuation_tokens('tokens.txt')
 
     # Given a filename, this method creates a new trie data
     # structure for the words in the file
@@ -44,7 +41,7 @@ class WordPredictor:
     # unique character of the vocabulary in a character list
     def create_char_list_from_vocab(self, vocab_id, vocab_filename):
         char_list = set()
-        char_list_by_vocab_id = {}
+        #char_list_by_vocab_id = {}
         if os.path.exists(vocab_filename):
             with open(vocab_filename) as fp:
                 try:
@@ -57,19 +54,26 @@ class WordPredictor:
                 except IOError:
                     print('Vocab file does not exist.')
 
-        char_list_by_vocab_id[vocab_id] = char_list
-        return char_list_by_vocab_id
+        #char_list_by_vocab_id[vocab_id] = char_list
+        #return char_list_by_vocab_id
+        return char_list
 
-    @staticmethod
-    def get_punc_token(punctuation):
-        if punctuation == ',':
-            return ',comma'
-        elif punctuation == '.':
-            return '.period'
-        elif punctuation == '?':
-            return '?question-mark'
-        elif punctuation == '!':
-            return '!exclamation-point'
+    def get_punctuation_tokens(self, token_filename):
+        token_list = dict()
+        if os.path.exists(token_filename):
+            with open(token_filename) as fp:
+                try:
+                    # Skip the first 10 lines
+                    for _ in range(10):
+                        next(fp)
+                    for line in fp:
+                        punc, token = line.split('\t')
+                        token_list[punc] = token
+                except IOError:
+                    print('Cannot find token file.')
+        #print(token_list)
+        return token_list
+
 
     # This method adds a vocabulary to the instance of the class. The vocabulary
     # is saved as a Trie data structure. For multiple vocabularies, the Tries are
@@ -79,8 +83,13 @@ class WordPredictor:
         if self.trie_table.has_key(vocab_id):
             print('Vocabulary with id "' + vocab_id + '" already exists, try a new id.')
             return False
+        # Create a new trie for the new vocabulary
         new_trie = self.create_new_trie(vocab_filename)
+        # Add the new trie to the trie table
         self.trie_table[vocab_id] = new_trie
+
+        # Create a new character list from the vocabulary and add it to the existing table
+        self.char_list[vocab_id] = self.create_char_list_from_vocab(vocab_id, vocab_filename)
         print('Vocab added successfully')
         return True
 
@@ -94,14 +103,45 @@ class WordPredictor:
             return False, None
 
 
+    # This function formats the context so that it is compatible
+    # with the language model we use. First, it tokenizes the 
+    # punctuations then it maps any out of vocabulary words to 'UNK'
+    def format_context(self, context, vocab_id):
+        tokenize_context = ''
+        for character in context:
+            if character in self.token_list:
+                tokenize_context += ' ' + self.token_list[character] + ' '
+            else:
+                tokenize_context += character
+        
+        # Load the trie with the given vocab_id
+        # We want to check if any word in the context 
+        # is out of vocabulary. If a word is out of the
+        # vocabulary, then we replace the word with <unk>
+        trie = self.trie_table[vocab_id]
+        words = tokenize_context.split()
+        new_context = ''
+        for word in words:
+            if trie.contains_word(word):
+                new_context += word + ' '
+            else:
+                new_context += '<unk>' + ' '
+
+        #print(new_context)
+        return new_context
+
+    
+
+
 
     # This method returns the kenlm states for the given context
-    def get_context_state(self, context, model):
+    def get_context_state(self, context, model, vocab_id):
         state_in = kenlm.State()
         state_out = kenlm.State()
-        context = '<s> ' + context
-        contextWords = context.split()
-        for w in contextWords:
+        context = '<s> ' + self.format_context(context, vocab_id)
+        context_words = context.split()
+        for w in context_words:
+            #print('Context', '{0}\t{1}'.format(model.BaseScore(state_in, w.lower(), state_out), w.lower()))
             print('Context', '{0}\t{1}'.format(model.BaseScore(state_in, w, state_out), w))
             state_in = state_out
             state_out = kenlm.State()
@@ -117,7 +157,7 @@ class WordPredictor:
 
 
     def _get_words(self, prefix, context, vocab_id, num_predictions, min_log_prob):
-        (state_in, state_out) = self.get_context_state(context, self.language_model)
+        (state_in, state_out) = self.get_context_state(context, self.language_model, vocab_id)
 
         flag, current_trie = self.get_vocab_trie(vocab_id)
         if flag == False:
@@ -144,11 +184,6 @@ class WordPredictor:
             else:
                 suggestion_list.append(likely_words_with_logprob[:num_predictions])
 
-
-        # Print the most probable word if needed
-        # print('Context: ' + context)
-        # print('Prefix: ' + prefix)
-        # print('Most likely word: "' + most_prob_word + '" with log probability: ' + str(most_prob_word_log))
         return suggestion_list
 
     # Input: a list of probable words and their proability for a list of prefix
@@ -172,6 +207,7 @@ class WordPredictor:
                 word = w
                 log_prob = p
         return word, log_prob
+
 
     def get_most_probable_word(self, prefix, context, vocab_id, min_log_prob = -float('inf')):
         (state_in, state_out) = self.get_context_state(context, self.language_model)
@@ -201,8 +237,8 @@ def main():
 
     #print(predictor.create_char_list_from_vocab(vocab_filename))
 
-    #words = predictor.get_words('f', '', 3, -float('inf')
-    #predictor.print_suggestions(words)
+    words = predictor.get_words_with_context('s', 'abra ka dabra', '', 3, -float('inf'))
+    predictor.print_suggestions(words)
 
     #words = predictor.get_words_with_context('', 'hello', '', 3, -float('inf'))
     #predictor.print_suggestions(words)
@@ -211,8 +247,9 @@ def main():
 
     #predictor.get_most_probable_word('w', 'hello', '')
 
-    words = predictor.get_words('h', '', 3, -float('inf'))
-    predictor.print_suggestions(words)
+    #words = predictor.get_words('h', 'world', 3, -float('inf'))
+    #predictor.print_suggestions(words)
+
 
 
 

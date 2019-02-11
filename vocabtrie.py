@@ -30,6 +30,17 @@ class VocabTrie(object):
         # be able to access a word by checking if info is a non-None value
         current.info = word
 
+    def contains_word(self, word):
+        current = self.root
+        for character in word:
+            if character in current.children:
+                current = current.children[character]
+                if current.info == word:
+                    return True
+            else:
+                return False
+
+
 
     def get_words_with_prefix(self, prefix, model, state_in, state_out):
         suggestion_list = []
@@ -44,7 +55,7 @@ class VocabTrie(object):
             if character in current.children:
                 current = current.children[character]
 
-            # Character X is not a valid entry in the try. It means there are no
+            # Character X is not a valid entry in the trie. It means there are no
             # suggestions starting with prefix *X [e.g. a5, where a is in trie,
             # but 5 is not]. In this case return an empty list.
             else:
@@ -99,6 +110,8 @@ def main():
     vt.add_word('hello')
     vt.add_word('hellboy')
     vt.add_word('helen')
+
+    print(vt.contains_word('held'))
 
     print(vt.get_words_with_prefix('he', model, state_in, state_out))
 
