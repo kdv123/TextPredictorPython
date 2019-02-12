@@ -39,6 +39,7 @@ class VocabTrie(object):
                     return True
             else:
                 return False
+        return False
 
 
 
@@ -113,7 +114,7 @@ def main():
     vt.add_word('hellboy')
     vt.add_word('helen')
 
-    print(vt.contains_word('held'))
+    print(vt.contains_word('hell'))
 
     print(vt.get_words_with_prefix('he', model, state_in, state_out))
 
