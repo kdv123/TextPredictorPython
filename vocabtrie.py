@@ -42,6 +42,8 @@ class VocabTrie(object):
 
 
 
+
+
     def get_words_with_prefix(self, prefix, model, state_in, state_out):
         suggestion_list = []
         words = []

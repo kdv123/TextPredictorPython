@@ -3,31 +3,35 @@
 import os
 import kenlm  # pip install https://github.com/kdv123/kenlm/archive/master.zip
 import vocabtrie
+
+
 class WordPredictor:
     def __init__(self, lm_filename, vocab_filename):
-        self.lm_filename = lm_filename
+        #self.lm_filename = lm_filename
         self.vocab_filename = vocab_filename
         self.language_model = kenlm.LanguageModel(lm_filename)
         self.char_list = {}
         self.char_list[''] = self.create_char_list_from_vocab('', vocab_filename)
         self.trie_table = {}
         self.trie_table[''] = self.create_new_trie(vocab_filename)
-        self.token_list = self.get_punctuation_tokens('tokens.txt')
+
+        # Omit the first two dots and the slash in the path if you are running predictor.py
+        self.token_list = self.get_punctuation_tokens('../resources/tokens.txt')
 
     # Given a filename, this method creates a new trie data
     # structure for the words in the file
     def create_new_trie(self, vocab_filename):
         word_list = []
         new_vocab_trie = vocabtrie.VocabTrie()
-        if os.path.exists(vocab_filename):
-            with open(vocab_filename) as fp:
-                try:
-                    for line in fp:
-                        line = line.strip()
-                        word_list.append(line)
-                        new_vocab_trie.add_word(line)
-                except IOError:
-                    print('Vocab file does not exist.')
+
+        try:
+            fp = open(vocab_filename)
+            for line in fp:
+                line = line.strip()
+                word_list.append(line)
+                new_vocab_trie.add_word(line)
+        except IOError:
+            print('Error: Can\'t find or read vocab file')
         return new_vocab_trie
 
     # Function to update character list
@@ -41,37 +45,34 @@ class WordPredictor:
     # unique character of the vocabulary in a character list
     def create_char_list_from_vocab(self, vocab_id, vocab_filename):
         char_list = set()
-        #char_list_by_vocab_id = {}
-        if os.path.exists(vocab_filename):
-            with open(vocab_filename) as fp:
-                try:
 
-                    #i = 0
-                    for line in fp:
-                        line = line.strip()
-                        for char in line:
-                            char_list.add(char)
-                except IOError:
-                    print('Vocab file does not exist.')
+        try:
+            fp = open(vocab_filename)
+            for line in fp:
+                line = line.strip()
+                for char in line:
+                    char_list.add(char)
+        except IOError:
+            print('Error: Can\'t find or read vocab file')
 
-        #char_list_by_vocab_id[vocab_id] = char_list
-        #return char_list_by_vocab_id
         return char_list
+
+        
 
     def get_punctuation_tokens(self, token_filename):
         token_list = dict()
-        if os.path.exists(token_filename):
-            with open(token_filename) as fp:
-                try:
-                    # Skip the first 10 lines
-                    for _ in range(10):
-                        next(fp)
-                    for line in fp:
-                        punc, token = line.split('\t')
-                        token_list[punc] = token
-                except IOError:
-                    print('Cannot find token file.')
-        #print(token_list)
+
+        try:
+            fp = open(token_filename)
+            # Skip the first 10 lines
+            for _ in range(10):
+                next(fp)
+            for line in fp:
+                punc, token = line.split('\t')
+                token_list[punc] = token
+        except IOError:
+            print('Error: Can\'t find or read token file')
+
         return token_list
 
 
@@ -90,7 +91,7 @@ class WordPredictor:
 
         # Create a new character list from the vocabulary and add it to the existing table
         self.char_list[vocab_id] = self.create_char_list_from_vocab(vocab_id, vocab_filename)
-        print('Vocab added successfully')
+        print('Vocab with id '+ vocab_id + ' added successfully')
         return True
 
     # Given a vocab_id, this method returns the trie from the trie table that
@@ -119,6 +120,8 @@ class WordPredictor:
         # is out of vocabulary. If a word is out of the
         # vocabulary, then we replace the word with <unk>
         trie = self.trie_table[vocab_id]
+
+
         words = tokenize_context.split()
         new_context = ''
         for word in words:
@@ -126,12 +129,10 @@ class WordPredictor:
                 new_context += word + ' '
             else:
                 new_context += '<unk>' + ' '
+                print('Vocab does not contain word '+ word)
 
         #print(new_context)
         return new_context
-
-    
-
 
 
     # This method returns the kenlm states for the given context
@@ -210,7 +211,7 @@ class WordPredictor:
 
 
     def get_most_probable_word(self, prefix, context, vocab_id, min_log_prob = -float('inf')):
-        (state_in, state_out) = self.get_context_state(context, self.language_model)
+        (state_in, state_out) = self.get_context_state(context, self.language_model, vocab_id)
         most_prob_word = ''
         most_prob_word_log = min_log_prob
 
@@ -223,22 +224,115 @@ class WordPredictor:
         most_prob_word, most_prob_word_log = self.find_most_probable_word(words_with_log_prob, most_prob_word, most_prob_word_log)
 
         # Print the most probable word if needed
-        #print('Context: ' + context)
-        #print('Prefix: ' + prefix)
-        #print('Most likely word: "' + most_prob_word + '" with log probability: ' + str(most_prob_word_log))
+        # print('Context: ' + context)
+        # print('Prefix: ' + prefix)
+        # print('Most likely word: "' + most_prob_word + '" with log probability: ' + str(most_prob_word_log))
 
         return most_prob_word, most_prob_word_log
 
 
+class CharacterPredictor:
+    def __init__(self, lm_filename, vocab_filename):
+        self.language_model = kenlm.LanguageModel(lm_filename)
+        self.vocab_filename = vocab_filename
+        self.char_list = {}
+        self.char_list[''] = self.create_char_list_from_vocab('', vocab_filename)
+
+
+    def create_char_list_from_vocab(self, vocab_id, vocab_filename):
+        char_list = set()
+        try:
+            fp = open(vocab_filename)
+            for line in fp:
+                line = line.strip()
+                for char in line:
+                    char_list.add(char)
+        except:
+            print('Error: Can\'t find or read token file')
+
+        return char_list
+
+    def get_context_state(self, context, model, vocab_id):
+        state_in = kenlm.State()
+        state_out = kenlm.State()
+        context = '<s> ' + context
+        context_words = context.split()
+        for w in context_words:
+            #print('Context', '{0}\t{1}'.format(model.BaseScore(state_in, w.lower(), state_out), w.lower()))
+            print('Context', '{0}\t{1}'.format(model.BaseScore(state_in, w, state_out), w))
+            state_in = state_out
+            state_out = kenlm.State()
+
+        return state_in, state_out
+
+    def format_context(self, context):
+        new_context = ''
+        for character in context:
+            if character == ' ':
+                new_context += '<sp> '
+            else:
+                new_context += character + ' '
+
+        print(new_context)
+        return new_context
+
+
+    def get_characters(self, prefix, context = '', vocab_id = '', min_log_prob = -float('inf')):
+        context = context + ' ' + prefix
+        context = self.format_context(context)
+        state_in, state_out = self.get_context_state(context, self.language_model, vocab_id)
+        char_list = self.char_list
+        char_list[vocab_id].add(' ')
+
+        character_list_probs = []
+
+        for character in char_list[vocab_id]:
+            if character == ' ':
+                log_prob = self.language_model.BaseScore(state_in, '<sp>', state_out)
+            else:
+                log_prob = self.language_model.BaseScore(state_in, character, state_out)
+            character_list_probs.append((character, log_prob))
+        return character_list_probs
+
+    def get_most_probable_character(self, prefix, context = '', vocab_id = '', min_log_prob = -float('inf')):
+        context = context + ' ' + prefix
+        context = self.format_context(context)
+        state_in, state_out = self.get_context_state(context, self.language_model, vocab_id)
+        char_list = self.char_list
+        char_list[vocab_id].add(' ')
+
+        #print(char_list[vocab_id])
+        max_prob_char = ''
+        max_log_prob = min_log_prob
+
+        for character in char_list[vocab_id]:
+            #print(character)
+            if character == ' ':
+                log_prob = self.language_model.BaseScore(state_in, '<sp>', state_out)
+            else:
+                log_prob = self.language_model.BaseScore(state_in, character, state_out)
+
+            if log_prob > max_log_prob:
+                max_log_prob = log_prob
+                max_prob_char = character
+            #print(character, log_prob)
+
+        return max_prob_char, max_log_prob
+
+
+
+
+
+
 def main():
-    lm_filename = 'resources/lm_word_medium.kenlm'
+    lm_filename = 'resources/lm_char_medium.kenlm'
     vocab_filename = 'resources/vocab_100k'
     predictor = WordPredictor(lm_filename, vocab_filename)
 
     #print(predictor.create_char_list_from_vocab(vocab_filename))
 
-    words = predictor.get_words_with_context('s', 'abra ka dabra', '', 3, -float('inf'))
-    predictor.print_suggestions(words)
+    #words = predictor.get_words_with_context('s', 'abra ka dabra', '', 3, -float('inf'))
+    #predictor.print_suggestions(words)
 
     #words = predictor.get_words_with_context('', 'hello', '', 3, -float('inf'))
     #predictor.print_suggestions(words)
@@ -250,6 +344,10 @@ def main():
     #words = predictor.get_words('h', 'world', 3, -float('inf'))
     #predictor.print_suggestions(words)
 
+
+    char_predictor = CharacterPredictor(lm_filename, vocab_filename)
+    print(char_predictor.get_most_probable_character('am', 'the united states of'))
+    #print(char_predictor.get_characters('a', 'the united states of'))
 
 
 

@@ -1,3 +1,6 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import unittest
 import kenlm
 from predictor import WordPredictor
@@ -24,10 +27,10 @@ class TestWordPredictor(unittest.TestCase):
         self.assertEqual(self.wordPredictor.update_char_list_from_string(list, str), res, "OK")
 
     def test_create_char_list_from_vocab(self):
-        test_res = self.wordPredictor.create_char_list_from_vocab(self.vocab_id, self.vocab_filename)
-        id, char_set = test_res.popitem()
-        self.assertIsInstance(type(id), type(str), "Return type is not same")
-        #self.assertEqual(char_set, type(set), "OK")
+        char_set = self.wordPredictor.create_char_list_from_vocab(self.vocab_id, self.vocab_filename)
+        #id, char_set = test_res.popitem()
+        #self.assertIsInstance(type(id), type(str), "Return type is not same")
+        self.assertIsInstance(type(char_set), type(set), "Return type is not same")
 
     def test_add_vocab(self, vocab_id = 'vocab_id'):
         new_trie = self.wordPredictor.create_new_trie(self.vocab_filename)
@@ -39,12 +42,13 @@ class TestWordPredictor(unittest.TestCase):
         self.assertIsInstance(vocabTr, VocabTrie, 'Not OK')
         self.assertIsInstance(type(flag), type(bool), "Not OK")
 
-
+    """
     def test_get_punc_token(self):
         self.assertEqual(self.wordPredictor.get_punc_token(','), ',comma', 'Punctuation and token are not equal')
+    """
 
     def test_get_context_state(self):
-        sIn, sOut = self.wordPredictor.get_context_state('<s>', self.language_model)
+        sIn, sOut = self.wordPredictor.get_context_state('<s>', self.language_model, self.vocab_id)
         self.assertIsInstance(sIn, kenlm.State, 'stateIn is not an instance of kenlm.State')
         self.assertIsInstance(sOut, kenlm.State, 'stateOut is not an instance of kenlm.State')
 

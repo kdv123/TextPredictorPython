@@ -23,7 +23,7 @@ def main():
 	# for the given vocabulary with a vocab_id. By default
 	# the vocab_id is set to ''. If you want to add another 
 	# vocabulary then you need to call add_vocab method which 
-	# is illustrated in ....
+	# is illustrated in add_vocab_query.py
 
 	# Suppose, we have a prefix 'a' and a context 'the united
 	# states of america'. Based on the given information, if 
