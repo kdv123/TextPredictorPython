@@ -231,95 +231,6 @@ class WordPredictor:
         return most_prob_word, most_prob_word_log
 
 
-class CharacterPredictor:
-    def __init__(self, lm_filename, vocab_filename):
-        self.language_model = kenlm.LanguageModel(lm_filename)
-        self.vocab_filename = vocab_filename
-        self.char_list = {}
-        self.char_list[''] = self.create_char_list_from_vocab('', vocab_filename)
-
-
-    def create_char_list_from_vocab(self, vocab_id, vocab_filename):
-        char_list = set()
-        try:
-            fp = open(vocab_filename)
-            for line in fp:
-                line = line.strip()
-                for char in line:
-                    char_list.add(char)
-        except:
-            print('Error: Can\'t find or read token file')
-
-        return char_list
-
-    def get_context_state(self, context, model, vocab_id):
-        state_in = kenlm.State()
-        state_out = kenlm.State()
-        context = '<s> ' + context
-        context_words = context.split()
-        for w in context_words:
-            #print('Context', '{0}\t{1}'.format(model.BaseScore(state_in, w.lower(), state_out), w.lower()))
-            print('Context', '{0}\t{1}'.format(model.BaseScore(state_in, w, state_out), w))
-            state_in = state_out
-            state_out = kenlm.State()
-
-        return state_in, state_out
-
-    def format_context(self, context):
-        new_context = ''
-        for character in context:
-            if character == ' ':
-                new_context += '<sp> '
-            else:
-                new_context += character + ' '
-
-        print(new_context)
-        return new_context
-
-
-    def get_characters(self, prefix, context = '', vocab_id = '', min_log_prob = -float('inf')):
-        context = context + ' ' + prefix
-        context = self.format_context(context)
-        state_in, state_out = self.get_context_state(context, self.language_model, vocab_id)
-        char_list = self.char_list
-        char_list[vocab_id].add(' ')
-
-        character_list_probs = []
-
-        for character in char_list[vocab_id]:
-            if character == ' ':
-                log_prob = self.language_model.BaseScore(state_in, '<sp>', state_out)
-            else:
-                log_prob = self.language_model.BaseScore(state_in, character, state_out)
-            character_list_probs.append((character, log_prob))
-        return character_list_probs
-
-    def get_most_probable_character(self, prefix, context = '', vocab_id = '', min_log_prob = -float('inf')):
-        context = context + ' ' + prefix
-        context = self.format_context(context)
-        state_in, state_out = self.get_context_state(context, self.language_model, vocab_id)
-        char_list = self.char_list
-        char_list[vocab_id].add(' ')
-
-        #print(char_list[vocab_id])
-        max_prob_char = ''
-        max_log_prob = min_log_prob
-
-        for character in char_list[vocab_id]:
-            #print(character)
-            if character == ' ':
-                log_prob = self.language_model.BaseScore(state_in, '<sp>', state_out)
-            else:
-                log_prob = self.language_model.BaseScore(state_in, character, state_out)
-
-            if log_prob > max_log_prob:
-                max_log_prob = log_prob
-                max_prob_char = character
-            #print(character, log_prob)
-
-        return max_prob_char, max_log_prob
-
-
 
 
 
@@ -343,11 +254,6 @@ def main():
 
     #words = predictor.get_words('h', 'world', 3, -float('inf'))
     #predictor.print_suggestions(words)
-
-
-    char_predictor = CharacterPredictor(lm_filename, vocab_filename)
-    print(char_predictor.get_most_probable_character('am', 'the united states of'))
-    #print(char_predictor.get_characters('a', 'the united states of'))
 
 
 
