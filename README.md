@@ -1,8 +1,8 @@
-#WordPredictor
+# WordPredictor
 Library for performing word and chracter level predictions, with the help of kenlm (Language model inference code by Kenneth Heafield, kenlm at kheafield.com).
 
 
-##System requirements
+## System requirements
 1. pip
 2. Python 2.7
 3. kenlm
@@ -10,7 +10,8 @@ Library for performing word and chracter level predictions, with the help of ken
 ## Installation
 Use the package manager pip to install kenlm 
 
-``` pip install pip install https://github.com/kdv123/kenlm/archive/master.zip
+```bash
+pip install pip install https://github.com/kdv123/kenlm/archive/master.zip
 ```
 ## Examples
 Check the [examples] (https://github.com/sworborno/word_predictor/tree/master/examples) under the root repository for some example scripts.
