@@ -14,15 +14,15 @@ Use the package manager pip to install kenlm
 pip install https://github.com/kdv123/kenlm/archive/master.zip
 ```
 ## Examples
-Check the [examples] (https://github.com/sworborno/word_predictor/tree/master/examples) under the root repository for some example scripts.
+Check the [/examples](https://github.com/sworborno/word_predictor/tree/master/examples) directory under the root repository for some example scripts.
 1. [Find most probable word for given context](https://github.com/sworborno/word_predictor/blob/master/examples/most_probable_word.py)
 2. [Find a list of probable words for a given prefix and a context](https://github.com/sworborno/word_predictor/blob/master/examples/probable_words_with_context.py)
 3. [Add a new vocabulary](https://github.com/sworborno/word_predictor/blob/master/examples/add_vocab_query.py)
 
 
 ## Usage
-There are three python scripts which represent three class for the predictor. The predictor.py scripts contains the WordPredictor 
-class and the chracter_predictor.py script contains the CharacterPredictor class. The vocabtrie.py contains a VocabTrie class which
+There are three python scripts which represent three class for the predictor. The [predictor.py](https://github.com/sworborno/word_predictor/blob/master/predictor.py) script contains the WordPredictor 
+class and the [chracter_predictor.py](https://github.com/sworborno/word_predictor/blob/master/character_predictor.py) script contains the CharacterPredictor class. The [vocabtrie.py](https://github.com/sworborno/word_predictor/blob/master/vocabtrie.py) contains a VocabTrie class which
 is used by the WordPredictor class to create a trie data structure.
 
 To use the WordPredictor class you need to do the following:
