@@ -16,7 +16,7 @@ class WordPredictor:
         self.trie_table[''] = self.create_new_trie(vocab_filename)
 
         # Omit the first two dots and the slash in the path if you are running predictor.py
-        self.token_list = self.get_punctuation_tokens('../resources/tokens.txt')
+        self.token_list = self.get_punctuation_tokens('resources/tokens.txt')
 
     # Given a filename, this method creates a new trie data
     # structure for the words in the file
@@ -187,6 +187,28 @@ class WordPredictor:
 
         return suggestion_list
 
+
+    def get_most_probable_word(self, prefix, context, vocab_id = '', min_log_prob = -float('inf')):
+        (state_in, state_out) = self.get_context_state(context, self.language_model, vocab_id)
+        most_prob_word = ''
+        most_prob_word_log = min_log_prob
+
+        flag, current_trie = self.get_vocab_trie(vocab_id)
+        if flag == False:
+            return most_prob_word, most_prob_word_log
+
+        words_with_log_prob = current_trie.get_words_with_prefix(prefix, self.language_model, state_in, state_out)
+        # Update the most probable word
+        most_prob_word, most_prob_word_log = self.find_most_probable_word(words_with_log_prob, most_prob_word, most_prob_word_log)
+
+        # Print the most probable word if needed
+        # print('Context: ' + context)
+        # print('Prefix: ' + prefix)
+        # print('Most likely word: "' + most_prob_word + '" with log probability: ' + str(most_prob_word_log))
+
+        return most_prob_word, most_prob_word_log
+
+
     # Input: a list of probable words and their proability for a list of prefix
     # Example: [[0, [['a', -2.04],['aa', -3.04],['ab', -2.04]]], [[1, [['b', -2.04],['ba', -3.04],['bb', -2.04]]] .....]
     def print_suggestions(self, suggestion_list):
@@ -210,26 +232,7 @@ class WordPredictor:
         return word, log_prob
 
 
-    def get_most_probable_word(self, prefix, context, vocab_id, min_log_prob = -float('inf')):
-        (state_in, state_out) = self.get_context_state(context, self.language_model, vocab_id)
-        most_prob_word = ''
-        most_prob_word_log = min_log_prob
-
-        flag, current_trie = self.get_vocab_trie(vocab_id)
-        if flag == False:
-            return most_prob_word, most_prob_word_log
-
-        words_with_log_prob = current_trie.get_words_with_prefix(prefix, self.language_model, state_in, state_out)
-        # Update the most probable word
-        most_prob_word, most_prob_word_log = self.find_most_probable_word(words_with_log_prob, most_prob_word, most_prob_word_log)
-
-        # Print the most probable word if needed
-        # print('Context: ' + context)
-        # print('Prefix: ' + prefix)
-        # print('Most likely word: "' + most_prob_word + '" with log probability: ' + str(most_prob_word_log))
-
-        return most_prob_word, most_prob_word_log
-
+    
 
 
 
@@ -238,7 +241,7 @@ class WordPredictor:
 def main():
     lm_filename = 'resources/lm_char_medium.kenlm'
     vocab_filename = 'resources/vocab_100k'
-    predictor = WordPredictor(lm_filename, vocab_filename)
+    word_predictor = WordPredictor(lm_filename, vocab_filename)
 
     #print(predictor.create_char_list_from_vocab(vocab_filename))
 
@@ -250,10 +253,16 @@ def main():
     #print(predictor.get_most_likely_word(words))
     #predictor.add_vocab('vocab_100k', vocab_filename)
 
-    #predictor.get_most_probable_word('w', 'hello', '')
+    prefix = 'a'
+    context = 'the united states of'
+    most_prob_word, log_prob = word_predictor.get_most_probable_word(prefix, context, vocab_id = '', min_log_prob = -float('inf'))
 
-    #words = predictor.get_words('h', 'world', 3, -float('inf'))
-    #predictor.print_suggestions(words)
+    print('Context: ' + context)
+    print('Prefix: ' + prefix)
+    print('Most probable word: "' + most_prob_word + '" with log probability: ' + str(log_prob))
+
+
+
 
 
 
