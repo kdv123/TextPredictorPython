@@ -11,12 +11,12 @@ Library for performing word and chracter level predictions, with the help of ken
 Use the package manager pip to install kenlm 
 
 ```bash
-pip install pip install https://github.com/kdv123/kenlm/archive/master.zip
+pip install https://github.com/kdv123/kenlm/archive/master.zip
 ```
 ## Examples
 Check the [examples] (https://github.com/sworborno/word_predictor/tree/master/examples) under the root repository for some example scripts.
 1. [Find most probable word for given context](https://github.com/sworborno/word_predictor/blob/master/examples/most_probable_word.py)
-2. [Find a list of probable words for a given prefix and a context] (https://github.com/sworborno/word_predictor/blob/master/examples/probable_words_with_context.py)
+2. [Find a list of probable words for a given prefix and a context](https://github.com/sworborno/word_predictor/blob/master/examples/probable_words_with_context.py)
 3. [Add a new vocabulary](https://github.com/sworborno/word_predictor/blob/master/examples/add_vocab_query.py)
 
 
