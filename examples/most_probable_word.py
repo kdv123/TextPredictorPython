@@ -41,7 +41,7 @@ def main():
 
 
 	# Another example
-	prefix = 'w'
+	prefix = 't'
 	context = 'hello'
 	most_prob_word, log_prob = word_predictor.get_most_probable_word(prefix, context, vocab_id = '', min_log_prob = -float('inf'))
 

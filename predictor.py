@@ -5,6 +5,7 @@ import kenlm  # pip install https://github.com/kdv123/kenlm/archive/master.zip
 import vocabtrie
 
 
+
 class WordPredictor:
     def __init__(self, lm_filename, vocab_filename):
         #self.lm_filename = lm_filename
@@ -16,7 +17,7 @@ class WordPredictor:
         self.trie_table[''] = self.create_new_trie(vocab_filename)
 
         # Omit the first two dots and the slash in the path if you are running predictor.py
-        self.token_list = self.get_punctuation_tokens('resources/tokens.txt')
+        self.token_list = self.get_punctuation_tokens('../resources/tokens.txt')
 
     # Given a filename, this method creates a new trie data
     # structure for the words in the file
@@ -237,7 +238,7 @@ class WordPredictor:
 
 
 
-
+"""
 def main():
     lm_filename = 'resources/lm_char_medium.kenlm'
     vocab_filename = 'resources/vocab_100k'
@@ -248,8 +249,8 @@ def main():
     #words = predictor.get_words_with_context('s', 'abra ka dabra', '', 3, -float('inf'))
     #predictor.print_suggestions(words)
 
-    #words = predictor.get_words_with_context('', 'hello', '', 3, -float('inf'))
-    #predictor.print_suggestions(words)
+    words = word_predictor.get_words_with_context('', 'hello', '', 3, -float('inf'))
+    word_predictor.print_suggestions(words)
     #print(predictor.get_most_likely_word(words))
     #predictor.add_vocab('vocab_100k', vocab_filename)
 
@@ -269,3 +270,4 @@ def main():
 if __name__ == "__main__":
     main()
 
+"""
