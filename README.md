@@ -34,9 +34,33 @@ There are some example language models and vocabulary filename in the [resources
 sub-directory. 
 
 ```python
-lm_filename = 'resources/lm_char_medium.kenlm'
+lm_filename = 'resources/lm_word_medium.kenlm'
 vocab_filename = 'resources/vocab_100k'
 word_predictor = WordPredictor(lm_filename, vocab_filename)
+```
+There are three methods to predict the most probable word or a list of probable words:
+
+1. The first method takes a prefix, a vocab_id and a minimum log probabilty as argument and returns a list of
+probable words without considering any context:
+```python
+def get_words(prefix, vocab_id, num_predictions, min_log_prob)
+```
+When an object of the WordPredictor is instantiated it creates a trie data structure with the default 
+**vocab_id = ''**. A list of characters from the vocabulary is also created on instantiation and the method returns 
+a list of probable words starting with the prefix and each character of the character list. The default value for the parameter **num_predictions** 
+is 0 and the method returns all the predictions ordering from the most probable to the least. The default value for the parameter **min_log_prob**
+is **-float('inf')**. 
+
+2. The second method is similar to the previous one by it also takes into account a context to predict the list of probable words:
+```python
+def get_words(prefix, context, vocab_id, num_predictions, min_log_prob)
+```
+
+3. The third method can take the similar arguments to the first and second method but in this case it only returns the most
+probable word for a given context and a prefix:
+
+```python
+def get_most_probable_word(prefix, context, vocab_id, num_predictions, min_log_prob)
 ```
 
 

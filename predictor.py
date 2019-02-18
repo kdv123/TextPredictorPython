@@ -189,7 +189,7 @@ class WordPredictor:
         return suggestion_list
 
 
-    def get_most_probable_word(self, prefix, context, vocab_id = '', min_log_prob = -float('inf')):
+    def get_most_probable_word(self, prefix, context='', vocab_id = '', min_log_prob = -float('inf')):
         (state_in, state_out) = self.get_context_state(context, self.language_model, vocab_id)
         most_prob_word = ''
         most_prob_word_log = min_log_prob
@@ -238,9 +238,9 @@ class WordPredictor:
 
 
 
-"""
+
 def main():
-    lm_filename = 'resources/lm_char_medium.kenlm'
+    lm_filename = 'resources/lm_word_medium.kenlm'
     vocab_filename = 'resources/vocab_100k'
     word_predictor = WordPredictor(lm_filename, vocab_filename)
 
@@ -269,5 +269,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-"""
