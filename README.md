@@ -1,6 +1,5 @@
 # WordPredictor
-Library for performing word and chracter level predictions, with the help of kenlm (Language model inference code by Kenneth Heafield, kenlm at kheafield.com).
-
+This class can make word and chracter level predictions based on an N-gram language mode. Language modeling is done using the [KenLM library](https://kheafield.com/code/kenlm/).
 
 ## System requirements
 1. pip
@@ -8,7 +7,7 @@ Library for performing word and chracter level predictions, with the help of ken
 3. kenlm
 
 ## Installation
-Use the package manager pip to install kenlm 
+Use the package manager pip to install KenLM. We have made a branch of the original [KenLM repo](https://github.com/kpu/kenlm). The only change is to change several scripts to compile KenLM with support for up to 12-gram language models. This is required by the example character language model provided here.
 
 ```bash
 pip install https://github.com/kdv123/kenlm/archive/master.zip
@@ -63,5 +62,6 @@ probable word for a given context and a prefix:
 def get_most_probable_word(prefix, context, vocab_id, num_predictions, min_log_prob)
 ```
 
-
+## Acknowledgements
+This material is based upon work supported by the National Science Foundation under Grant No. (1750193). Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
 
