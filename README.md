@@ -13,11 +13,10 @@ Language model queries are performed using the [KenLM library](https://kheafield
 pip install https://github.com/kdv123/kenlm/archive/master.zip
 ```
 ## Examples
-Check the [/examples](https://github.com/sworborno/word_predictor/tree/master/examples) directory under the root repository for some example scripts.
-1. [Find most probable word for given context](https://github.com/sworborno/word_predictor/blob/master/examples/most_probable_word.py)
-2. [Find a list of probable words for a given prefix and a context](https://github.com/sworborno/word_predictor/blob/master/examples/probable_words_with_context.py)
-3. [Add a new vocabulary](https://github.com/sworborno/word_predictor/blob/master/examples/add_vocab_query.py)
-
+The [examples](examples) directory under the root repository has the following example scripts:
+1. [Find most probable word for a given context](examples/most_probable_word.py)
+2. [Find a list of probable words for a given prefix and context](examples/probable_words_with_context.py)
+3. [Add a new vocabulary](examples/add_vocab_query.py)
 
 ## Usage
 There are three python scripts which represent three class for the predictor. The [predictor.py](https://github.com/sworborno/word_predictor/blob/master/predictor.py) script contains the WordPredictor 
