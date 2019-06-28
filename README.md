@@ -1,5 +1,5 @@
-# WordPredictor
-This python class makes word and chracter level predictions based on an N-gram language model. Language model queries are performed using the [KenLM library](https://kheafield.com/code/kenlm/).
+# TextPredictor
+This project contains Python classes for making word and chracter level predictions based on an N-gram language model. The word prediction class can predict based the current prefix of a word and optional left context.  The character prediction class predicts the most probable next characters on left context. 
 
 ## System requirements
 1. pip
@@ -7,7 +7,7 @@ This python class makes word and chracter level predictions based on an N-gram l
 3. KenLM
 
 ## Installation
-Use the package manager pip to install KenLM. We have made a branch of the original [KenLM repo](https://github.com/kpu/kenlm). The only change is to change several scripts to compile KenLM with support for up to 12-gram language models. This is required by the example character language model provided here.
+Language model queries are performed using the [KenLM library](https://kheafield.com/code/kenlm/). Use the package manager pip to install KenLM. We have made a branch of the original [KenLM repo](https://github.com/kpu/kenlm). The only change is to change several scripts to compile KenLM with support for up to 12-gram language models. This is required by the example character language model provided here.
 
 ```bash
 pip install https://github.com/kdv123/kenlm/archive/master.zip
