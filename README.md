@@ -1,4 +1,4 @@
-# TextPredictor
+# Text Predictor for Python
 This project contains Python classes for making word and chracter level predictions based on an N-gram language model. The word prediction class predicts words based the current prefix of a word and optional left context.  The character prediction class predicts the most probable next characters based on optional left context. 
 
 ## System requirements
