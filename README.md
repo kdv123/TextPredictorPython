@@ -1,5 +1,5 @@
 # TextPredictor
-This project contains Python classes for making word and chracter level predictions based on an N-gram language model. The word prediction class can predict based the current prefix of a word and optional left context.  The character prediction class predicts the most probable next characters on left context. 
+This project contains Python classes for making word and chracter level predictions based on an N-gram language model. The word prediction class predicts words based the current prefix of a word and optional left context.  The character prediction class predicts the most probable next characters based on optional left context. 
 
 ## System requirements
 1. pip
@@ -19,8 +19,8 @@ The [examples](examples) directory under the root repository has the following e
 3. [Add a new vocabulary](examples/add_vocab_query.py)
 
 ## Usage
-There are three python scripts which represent three class for the predictor. The [predictor.py](https://github.com/sworborno/word_predictor/blob/master/predictor.py) script contains the WordPredictor 
-class and the [chracter_predictor.py](https://github.com/sworborno/word_predictor/blob/master/character_predictor.py) script contains the CharacterPredictor class. The [vocabtrie.py](https://github.com/sworborno/word_predictor/blob/master/vocabtrie.py) contains a VocabTrie class which
+There are three python scripts which represent three class for the predictor. The [predictor.py](predictor.py) script contains the WordPredictor 
+class and the [chracter_predictor.py](character_predictor.py) script contains the CharacterPredictor class. The [vocabtrie.py](vocabtrie.py) contains a VocabTrie class which
 is used by the WordPredictor class to create a trie data structure.
 
 To use the WordPredictor class you need to do the following:
@@ -28,7 +28,7 @@ To use the WordPredictor class you need to do the following:
 from predictor import WordPredictor
 ```
 Then you need to specify the path to a language model filename and a vocabulary filename.
-There are some example language models and vocabulary filename in the [resources](https://github.com/sworborno/word_predictor/tree/master/resources)
+There are some example language models and vocabulary filename in the [resources](resources)
 sub-directory. 
 
 ```python
