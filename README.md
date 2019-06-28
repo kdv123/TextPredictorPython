@@ -1,5 +1,5 @@
 # WordPredictor
-This class can make word and chracter level predictions based on an N-gram language mode. Language model queries are performed using the [KenLM library](https://kheafield.com/code/kenlm/).
+This python class makes word and chracter level predictions based on an N-gram language model. Language model queries are performed using the [KenLM library](https://kheafield.com/code/kenlm/).
 
 ## System requirements
 1. pip
