@@ -62,5 +62,5 @@ def get_most_probable_word(prefix, context, vocab_id, num_predictions, min_log_p
 ```
 
 ## Acknowledgements
-This material is based upon work supported by the National Science Foundation under Grant No. (1750193). Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
+This material is based upon work supported by the National Science Foundation under Grant No. 1750193. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
 
